@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 //import loader spinner image
 import loader from './images/loader.svg'
 
+const randomChoice = arr => {
+  const randIndex = Math.floor(Math.random() * arr.length)
+  return arr[randIndex]
+}
+
 const Header = () => (
   <div className="header grid">
     <h1 className="title"> It's Gif, not Gif.</h1>
   </div>
 )
 
-const UserHint = ({loading, hintText}) => (
+const UserHint = ({ loading, hintText }) => (
   <div className="user-hint">
     {/* check whether or not we have a loading state and render out either
     our spinner or hintText based on that, using a ternary opperator
@@ -23,7 +28,47 @@ class App extends Component {
     super(props)
     this.state = {
       searchTerm: '',
-      hintText: 'Hit enter to search'
+      hintText: 'Hit enter to search',
+      gif: null,
+      //an array of gifs
+      gifs: []
+    }
+  }
+
+  // we want a function that searches a giphy api using fetch 
+  // and outs the search term into the query url and then we 
+  // can do something with the results
+
+  //we can also write async methods into our components
+  // that let us use the async/await style of function
+  searchGiphy = async searchTerm => {
+    //first try fetch
+    try {
+      //here we use the await key word to wait for the response to come back
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=oJxZOCRax4aBQUGfQ6FVhGg15TdIHpkI&q=${searchTerm}&limit=100&offset=0&rating=pg-13&lang=en`
+      );
+      // we convert the raw response into json data
+      // const {data} gets the .data part of the response
+      const { data } = await response.json()
+
+      //here we grab the random result from our images
+      const randomGif = randomChoice(data)
+
+      console.log({ randomGif });
+      console.log(data);
+
+      this.setState((prevState, props) => ({
+        ...prevState,
+        // get the 1st result and put it in the state
+        gif: randomGif,
+        //use spread to show previous gifs and then add new gif on the end
+        gifs: [...prevState.gifs, randomGif]
+      }))
+
+      //if our fetch fails, we catch it here
+    } catch (error) {
+
     }
   }
 
@@ -31,13 +76,15 @@ class App extends Component {
   // functions, meaning we dont need a constructor and bind
   handleChange = event => {
     const { value } = event.target;
-  
+
     this.setState((prevState, props) => ({
       // we take our old props and spread them out 
       ...prevState,
       //here then we overwrite the ones we want after
       searchTerm: value,
-      hintText: `Hit enter to search ${value}`
+      // set the hintText only when we have 2 or more characters
+      // in our input, otherwise we make it an empty string
+      hintText: value.length > 2 ? `Hit enter to search ${value}` : ''
     }));
   };
 
@@ -46,17 +93,25 @@ class App extends Component {
     // when we have two or more characters in our search box and we have 
     // also pressed enter, we then wants to run a search
     if (value.length > 2 && event.key === 'Enter') {
-      alert(`search for ${value}`)
+      //here we call our searchGiphy function using the search term
+      this.searchGiphy(value)
     }
   };
 
   render() {
-    const { searchTerm } = this.state
+    const { searchTerm, gif } = this.state
     return (
       <div className="page">
         <Header />
         <div className="search grid">
           {/* our stack of gif images */}
+          {/* loop over array of gif images from our state 
+          and we create multiple videos from it */}
+          {this.state.gifs.map(gif => (
+            <video
+              className="grid-item video" autoPlay loop src={gif.images.original.mp4} />
+          ))}
+
           <input className="input grid-item" placeholder="Type Something"
             /* anytime our input changes, were going to run a function called handleChange*/
             /* since we are using a component as a class, we have to use the "this" keyword and then add our handleChange method into our component*/

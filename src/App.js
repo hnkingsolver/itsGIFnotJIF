@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
+//import loader spinner image
+import loader from './images/loader.svg'
 
 const Header = () => (
   <div className="header grid">
     <h1 className="title"> It's Gif, not Gif.</h1>
+  </div>
+)
+
+const UserHint = ({loading, hintText}) => (
+  <div className="user-hint">
+    {/* check whether or not we have a loading state and render out either
+    our spinner or hintText based on that, using a ternary opperator
+    (if/else) */}
+    {loading ? <img src={loader} className="block mx-auto" /> : hintText}
   </div>
 )
 
@@ -11,7 +22,8 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchTerm: ''
+      searchTerm: '',
+      hintText: 'Hit enter to search'
     }
   }
 
@@ -24,10 +36,9 @@ class App extends Component {
       // we take our old props and spread them out 
       ...prevState,
       //here then we overwrite the ones we want after
-      searchTerm: value
+      searchTerm: value,
+      hintText: `Hit enter to search ${value}`
     }));
-    if (value.length > 2) {
-    }
   };
 
   handleKeyPress = event => {
@@ -54,6 +65,9 @@ class App extends Component {
             value={searchTerm}
           />
         </div>
+        {/* pass userHint all of our state using a spread */}
+        <UserHint {...this.state} />
+
       </div>
     );
   }

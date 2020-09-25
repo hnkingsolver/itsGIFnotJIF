@@ -47,7 +47,7 @@ class App extends Component {
     try {
       //here we use the await key word to wait for the response to come back
       const response = await fetch(
-        `https://api.giphy.com/v1/gifs/search?api_key=oJxZOCRax4aBQUGfQ6FVhGg15TdIHpkI&q=${searchTerm}&limit=100&offset=0&rating=pg-13&lang=en`
+        `https://api.giphy.com/v1/gifs/search?api_key=oJxZOCRax4aBQUGfQ6FVhGg15TdIHpkI&q=${searchTerm}&limit=25&offset=0&rating=pg-13&lang=en`
       );
       // we convert the raw response into json data
       // const {data} gets the .data part of the response

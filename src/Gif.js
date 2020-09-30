@@ -3,7 +3,6 @@ import React, { Component } from "react";
 class Gif extends Component {
   //when our video has loaded we add a loaded classname
   // otherwise the video stays hidden
-
   constructor(props) {
     super(props);
     this.state = {

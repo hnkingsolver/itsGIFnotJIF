@@ -28,6 +28,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading: false,
       searchTerm: '',
       hintText: 'Hit enter to search',
       gif: null,
@@ -44,6 +45,10 @@ class App extends Component {
   // that let us use the async/await style of function
   searchGiphy = async searchTerm => {
     //first try fetch
+    this.setState({
+      //set loading state to true and this will show the spinner at the bottom
+      loading: true
+    })
     try {
       //here we use the await key word to wait for the response to come back
       const response = await fetch(
@@ -64,7 +69,9 @@ class App extends Component {
         // get the 1st result and put it in the state
         gif: randomGif,
         //use spread to show previous gifs and then add new gif on the end
-        gifs: [...prevState.gifs, randomGif]
+        gifs: [...prevState.gifs, randomGif],
+        //turn off loading spinner again
+        loading: false
       }))
 
       //if our fetch fails, we catch it here

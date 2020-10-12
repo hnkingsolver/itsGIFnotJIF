@@ -78,7 +78,8 @@ class App extends Component {
         //use spread to show previous gifs and then add new gif on the end
         gifs: [...prevState.gifs, randomGif],
         //turn off loading spinner again
-        loading: false
+        loading: false,
+        hintText: `Hit enter to search for more ${searchTerm}`
       }))
 
       //if our fetch fails, we catch it here
